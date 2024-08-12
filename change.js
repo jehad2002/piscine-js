@@ -7,5 +7,5 @@ function set(key, value) {
     } else {
         eval("sourceObject." + key + "=" + value);
     }
-    return value
+    return value;
 }
