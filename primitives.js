@@ -9,7 +9,7 @@
 name = 'jehad';
 document.write(name)*/
 // const v = 30; 
-const s = "hello"
-const i = 10
-const und = undefined
-const b = true
+const str  = "hello"
+const num = 10
+const bool = true
+const undef = undefined
