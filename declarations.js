@@ -1,5 +1,5 @@
-const escapeStr = "`, \, /, \" '";
-const arr = [4, "2"];
+const escapeStr = "special characters: ` \\ / \"  '."
+const arr = [4, '2'];
 const obj = {
     str: "string",
     num: 1,
