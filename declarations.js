@@ -1,4 +1,4 @@
-const escapeStr = "`, \, /, '";
+const escapeStr = "`, \, /, \" '";
 const arr = [4, "2"];
 const obj = {
     str: "string",
@@ -7,7 +7,7 @@ const obj = {
     undef:undefined,
 };
 const nested = {
-    arr: [4, undefined, "2"]
+    arr: [4, undefined, "2"],
     obj: {
         str: "string",
         num: 1,
