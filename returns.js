@@ -2,5 +2,5 @@ function id(x) {
     return x;
 }
 function getLength(x) {
-    return x.getLength;
+    return x.length;
 }
