@@ -26,4 +26,7 @@ function sameSign(a,b){
         return false
     }
 }
-console.log(sameSign(-231,0))
+console.log(sameSign(-231,0)) //false
+console.log(sameSign(-231, -5));  // Output: true
+console.log(sameSign(231, 5));    // Output: true
+console.log(sameSign(0, 0));      // Output: true

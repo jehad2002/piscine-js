@@ -17,3 +17,8 @@ function whisper(string) {
 function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
+console.log(yell("hello world")); // Output: [ 'hello', 'world' ]
+console.log(sentence(["hello", "world"])); // Output: "hello world"
+console.log(words("hello world")); // Output: ["hello", "world"]
+console.log(whisper("HELLO WORLD")); // Output: "*hello world*"
+console.log(capitalize("hElLo WoRLd")); // Output: "Hello world"

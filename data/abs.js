@@ -13,3 +13,6 @@ function abs(a) {
         return -a;
     }
 }
+console.log(isPositive(5));  // Output: true
+console.log(isPositive(-3)); // Output: false
+console.log(isPositive(0));  // Output: false

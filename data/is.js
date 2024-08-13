@@ -9,3 +9,5 @@ is.obj = (n) => typeof n === "object" && !is.fun(n) && !is.arr(n) && n !== null;
 is.fun = (n) => typeof n === "function";
 is.truthy = (n) => !!n;
 is.falsy = (n) => !n;
+console.log(is.num(42));    // Output: true
+console.log(is.num("42"));  // Output: false
