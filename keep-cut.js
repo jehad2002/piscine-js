@@ -29,12 +29,14 @@ function keepLast(str) {
 // console.log(keepLast("Go"));             Output: "Go"
 
 function keepFirstLast(str) {
-    return str.slice(0, 2) + str.slice(-2)
+    if (str.length <= 2) {
+        // If the string is 2 characters or shorter, return the string as is
+        return str;
+    }
+    return str.slice(0, 2) + str.slice(-2);
 }
-// console.log(keepFirstLast("Hello, World!"));  Output: "He!d!"
-// console.log(keepFirstLast("JavaScript"));     Output: "Jaipt"
-// console.log(keepFirstLast("A"));              Output: "A" (not enough characters for both slices, so it returns the first character only)
-// console.log(keepFirstLast("Go"));             Output: "Go" (string is exactly two characters long)
+// console.log(keepFirstLast('abcdef'));  Output: 'abef'
+
 //===============================================
 // let num1 = 10
 // let num2 = 20
