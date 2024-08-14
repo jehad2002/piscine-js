@@ -100,9 +100,9 @@ function ceil(int) {
 
 function trunc(int) {
     let counter = 0;
-    if (int > 99999999) {
-        int -= 99999999;
-        counter += 99999999;
+    if (int > 0xfffffffff) {
+        int -= 0xfffffffff;
+        counter += 0xfffffffff;
     }
     let neg = false;
     if (int < 0) {
@@ -119,5 +119,3 @@ function trunc(int) {
     }
     return counter;
 }
-// let result = trunc(-12345);
-// console.log(result);  Output: -12345
