@@ -29,7 +29,7 @@ function keepLast(str) {
 // console.log(keepLast("Go"));             Output: "Go"
 
 function keepFirstLast(str) {
-    if (str.length <= 2) {
+    if (str.length <= 3) {
         // If the string is 2 characters or shorter, return the string as is
         return str;
     }
