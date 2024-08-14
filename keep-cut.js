@@ -16,9 +16,9 @@ function cutFirstLast(str) {
 // console.log(cutFirstLast("Hello, World!"));  Output: "llo, World"
 // console.log(cutFirstLast("JavaScript"));     Output: "vaScrip"
 function keepFirst(str) {
-    return str.slice(2)
+    return str.slice(0,2)
 }
-// console.log(keepFirst("hello")) Output: llo
+// console.log(keepFirst('abcdef'));  // Output: 'ab'
 
 function keepLast(str) {
     return str.slice(-2)
