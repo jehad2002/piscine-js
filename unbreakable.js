@@ -32,6 +32,7 @@ function split(str, x) {
     result.push(str);
     return result;
 }
+//=============example==========================
 // var numbers = [1, 2, 3, 4];
 // var joinedNumbers = join(numbers, null);
 // console.log(joinedNumbers);  Output: "1,2,3,4"
