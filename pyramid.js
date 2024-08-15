@@ -1,12 +1,18 @@
-function pyramid(char, num) {
-    let str = "";
-    for (let i = 1; i <= num; i++) {
-        let space = " ".repeat(num - i);       
-        let chars = char.repeat(2 * i - 1);    
-        str += space + chars + "\n";           
+function pyramid(str, int) {
+    let res = ''
+    let currentLine = 1
+    for (let i = 1; i <= int; i++) {
+        res += ' '.repeat(int - i).repeat(str.length)
+        res += str.repeat(i * 2 - 1)
+        if (i === int) {
+            return res
+        }
+        res += '\n'
     }
-    return str.trim();                      
+
+    return res
 }
+console.log(pyramid('{}', 12))
 
 // console.log(pyramid('*', 5));
 // Output: 
