@@ -33,9 +33,9 @@ function divide(a, b) {
 function modulo(num, divisor) {
     return num - multiply(divisor, divide(num, divisor));
 }
-console.log(multiply(4, 3)); // Output: 12
-console.log(multiply(-4, 3)); // Output: -12
-console.log(divide(10, 2)); // Output: 5
-console.log(divide(10, -2)); // Output: -5
-console.log(modulo(10, 3)); // Output: 1
-console.log(modulo(10, -3)); // Output: 1
+// console.log(multiply(4, 3)); // Output: 12
+// console.log(multiply(-4, 3)); // Output: -12
+// console.log(divide(10, 2)); // Output: 5
+// console.log(divide(10, -2)); // Output: -5
+// console.log(modulo(10, 3)); // Output: 1
+// console.log(modulo(10, -3)); // Output: 1
