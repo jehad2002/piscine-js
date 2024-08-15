@@ -12,7 +12,6 @@ function pyramid(str, int) {
 
     return res
 }
-console.log(pyramid('{}', 12))
 
 // console.log(pyramid('*', 5));
 // Output: 
