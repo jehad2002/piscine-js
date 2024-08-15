@@ -1,9 +1,18 @@
-function pyramid(char,num) {
+function pyramid(char, num) {
     let str = "";
-let space = " ".repeat(char.length);
-for(var i = 1; i<=num; i++) {
-str = str + space.repeat(num - 1) + char.repeat(2 * i - 1) + "\n";
+    for (let i = 1; i <= num; i++) {
+        let space = " ".repeat(num - i);       // Calculate leading spaces
+        let chars = char.repeat(2 * i - 1);    // Calculate the number of characters
+        str += space + chars + "\n";           // Construct the line and add a newline
+    }
+    return str;
 }
-return str.slice(0,-1)
 
-}
+// console.log(pyramid('*', 5));'
+// Output: 
+//     *
+//    ***
+//   *****
+//  *******
+// *********
+
