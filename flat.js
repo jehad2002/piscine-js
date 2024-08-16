@@ -22,5 +22,5 @@ function alta(arr, d = 1) {
      : arr.slice();
 };
 
-const flattenedArr = alta(arr, Infinity);
-console.log(flattenedArr); // [1, 2, 3, 4, 5, 6]
+// const flattenedArr = alta(arr, Infinity);
+// console.log(flattenedArr); // [1, 2, 3, 4, 5, 6]
