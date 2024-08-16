@@ -15,7 +15,7 @@
 
 const arr = [1, 2, [3, 4, [5, 6]]];
 
-function alta(arr, d = 1) {
+function flat(arr, d = 1) {
    return d > 0 
      ? arr.reduce((acc, val) => 
          acc.concat(Array.isArray(val) ? alta(val, d - 1) : val), [])
