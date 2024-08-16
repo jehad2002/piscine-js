@@ -16,6 +16,11 @@ function ion(str) {
     return res;
 }
 
+// Define ionOut to use the ion function
+function ionOut(str) {
+    return ion(str);
+}
+
 // Example usage:
 // const exampleStr = "attention, direction";
 // const result = ion(exampleStr);
