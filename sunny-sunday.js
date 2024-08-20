@@ -1,5 +1,5 @@
-function sunnyySunday(date) {
-    let counter = -1;
+function sunnySunday(date) {
+    let counter = 0;
     const week = [
         "Monday",
         "Tuesday",
@@ -7,12 +7,12 @@ function sunnyySunday(date) {
         "Thursday",
         "Friday",
         "Saturday",
+        "Sunday"
     ];
     let start = new Date("0001-01-01T00:00:00");
-    while (start <= date) {
+    while (start < date) {
         start.setDate(start.getDate() + 1);
         counter++;
     }
-    console.log(week[counter % 6]);
-    return week[counter % 6];
+    return week[counter % 7];
 }
