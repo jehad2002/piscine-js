@@ -8,17 +8,19 @@ function sunnySunday(date) {
         "Saturday"
     ];
 
+    // Start from the reference date
     let start = new Date("0001-01-01T00:00:00");
-    let counter = 0;
+    let totalDays = 0;
 
+    // Calculate total number of days
     while (start < date) {
         start.setDate(start.getDate() + 1);
-        counter++;
-        if (counter % 7 === 6) {
-            // Skip Sundays by not incrementing the counter on Sundays
-            start.setDate(start.getDate() + 1);
-        }
+        totalDays++;
     }
 
-    return week[counter % 6];
+    // Exclude Sundays from the count
+    const adjustedDays = totalDays - Math.floor(totalDays / 7);
+
+    // Find the corresponding weekday
+    return week[adjustedDays % 6];
 }
