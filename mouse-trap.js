@@ -1,7 +1,8 @@
 let box;
-let circle;
 let flag = true;
-let x, y;
+let x;
+let y;
+let circle;
 
 export function createCircle() {
     addEventListener("click", function () {
@@ -9,7 +10,7 @@ export function createCircle() {
         circle.className = "circle";
         circle.style.left = x;
         circle.style.top = y;
-
+        
         if (flag) {
             circle.style.background = "white";
         } else {
@@ -35,36 +36,38 @@ export function moveCircle() {
         circlePreview.style.left = x;
         circlePreview.style.top = y;
 
-        const boxRect = box.getBoundingClientRect();
-        const circleRadius = 25;
-
-        const insideX = e.clientX > boxRect.left + circleRadius && e.clientX < boxRect.right - circleRadius;
-        const insideY = e.clientY > boxRect.top + circleRadius && e.clientY < boxRect.bottom - circleRadius;
-        const isInside = insideX && insideY;
-
-        if (isInside) {
-            circlePreview.style.background = 'var(--purple)';
-            flag = false;
-        } else {
+        if (flag) {
             circlePreview.style.background = "white";
-        }
-
-        if (!flag) {
-            if (e.clientX - circleRadius < boxRect.left) {
-                circlePreview.style.left = boxRect.left + "px";
-            }
-            if (e.clientX + circleRadius > boxRect.right) {
-                circlePreview.style.left = boxRect.right - 50 + "px";
-            }
-            if (e.clientY - circleRadius < boxRect.top) {
-                circlePreview.style.top = boxRect.top + "px";
-            }
-            if (e.clientY + circleRadius > boxRect.bottom) {
-                circlePreview.style.top = boxRect.bottom - 50 + "px";
-            }
+        } else {
+            circlePreview.style.background = 'var(--purple)';
         }
 
         document.body.appendChild(circlePreview);
+
+        const inBox = (e.clientX >= box.getBoundingClientRect().left + 25 &&
+                       e.clientX <= box.getBoundingClientRect().right - 25 &&
+                       e.clientY >= box.getBoundingClientRect().top + 25 &&
+                       e.clientY <= box.getBoundingClientRect().bottom - 25);
+        
+        if (inBox) {
+            document.querySelector(".circleRem").style.background = 'var(--purple)';
+            flag = false;
+        }
+
+        if (!flag) {
+            if (e.clientX - 25 < box.getBoundingClientRect().left) {
+                circlePreview.style.left = box.getBoundingClientRect().left + "px";
+            }
+            if (e.clientX + 25 > box.getBoundingClientRect().right) {
+                circlePreview.style.left = box.getBoundingClientRect().right - 50 + "px";
+            }
+            if (e.clientY - 25 < box.getBoundingClientRect().top) {
+                circlePreview.style.top = box.getBoundingClientRect().top + "px";
+            }
+            if (e.clientY + 25 > box.getBoundingClientRect().bottom) {
+                circlePreview.style.top = box.getBoundingClientRect().bottom - 50 + "px";
+            }
+        }
     });
 }
 
@@ -72,4 +75,5 @@ export function setBox() {
     box = document.createElement("div");
     box.className = "box";
     document.body.appendChild(box);
+    console.log(box.getBoundingClientRect().bottom);
 }
