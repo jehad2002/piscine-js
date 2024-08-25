@@ -1,8 +1,7 @@
 let box;
-let flag = true;
-let x;
-let y;
 let circle;
+let flag = true;
+let x, y;
 
 export function createCircle() {
     addEventListener("click", function () {
@@ -46,7 +45,7 @@ export function moveCircle() {
         if (isInside) {
             circlePreview.style.background = 'var(--purple)';
             flag = false;
-        } else if (flag) {
+        } else {
             circlePreview.style.background = "white";
         }
 
@@ -73,5 +72,4 @@ export function setBox() {
     box = document.createElement("div");
     box.className = "box";
     document.body.appendChild(box);
-    console.log(box.getBoundingClientRect().bottom);
 }
