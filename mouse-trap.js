@@ -1,71 +1,56 @@
 let box;
 let flag = true;
-let x;
-let y;
+let x, y;
 let circle;
 
 export function createCircle() {
-    addEventListener("click", function () {
+    document.addEventListener("click", function (e) {
         circle = document.createElement("div");
         circle.className = "circle";
+        x = e.clientX - 25 + "px";
+        y = e.clientY - 25 + "px";
         circle.style.left = x;
         circle.style.top = y;
-        
-        if (flag) {
-            circle.style.background = "white";
-        } else {
-            circle.style.background = 'var(--purple)';
-        }
-
+        circle.style.background = "white";
         document.body.appendChild(circle);
         flag = true;
     });
 }
 
 export function moveCircle() {
-    addEventListener("mousemove", e => {
-        document.querySelectorAll(".circleRem").forEach((elem) => {
-            elem.remove();
-        });
-
+    document.addEventListener("mousemove", function (e) {
+        if (!circle) return; // Prevent errors if no circle is created yet
         x = e.clientX - 25 + "px";
         y = e.clientY - 25 + "px";
-        let circlePreview = document.createElement("div");
-        circlePreview.className = "circle";
-        circlePreview.classList.add("circleRem");
-        circlePreview.style.left = x;
-        circlePreview.style.top = y;
+        circle.style.left = x;
+        circle.style.top = y;
 
-        if (flag) {
-            circlePreview.style.background = "white";
-        } else {
-            circlePreview.style.background = 'var(--purple)';
-        }
+        const circleRect = circle.getBoundingClientRect();
+        const boxRect = box.getBoundingClientRect();
 
-        document.body.appendChild(circlePreview);
+        // Check if the circle is entirely inside the box
+        const insideX = circleRect.left >= boxRect.left + 1 && circleRect.right <= boxRect.right - 1;
+        const insideY = circleRect.top >= boxRect.top + 1 && circleRect.bottom <= boxRect.bottom - 1;
+        const isInside = insideX && insideY;
 
-        const inBox = (e.clientX >= box.getBoundingClientRect().left + 25 &&
-                       e.clientX <= box.getBoundingClientRect().right - 25 &&
-                       e.clientY >= box.getBoundingClientRect().top + 25 &&
-                       e.clientY <= box.getBoundingClientRect().bottom - 25);
-        
-        if (inBox) {
-            document.querySelector(".circleRem").style.background = 'var(--purple)';
+        if (isInside) {
+            circle.style.background = 'var(--purple)';
             flag = false;
         }
 
         if (!flag) {
-            if (e.clientX - 25 < box.getBoundingClientRect().left) {
-                circlePreview.style.left = box.getBoundingClientRect().left + "px";
+            // Prevent the circle from leaving the box
+            if (circleRect.left < boxRect.left + 1) {
+                circle.style.left = boxRect.left + 1 + "px";
             }
-            if (e.clientX + 25 > box.getBoundingClientRect().right) {
-                circlePreview.style.left = box.getBoundingClientRect().right - 50 + "px";
+            if (circleRect.right > boxRect.right - 1) {
+                circle.style.left = boxRect.right - circleRect.width - 1 + "px";
             }
-            if (e.clientY - 25 < box.getBoundingClientRect().top) {
-                circlePreview.style.top = box.getBoundingClientRect().top + "px";
+            if (circleRect.top < boxRect.top + 1) {
+                circle.style.top = boxRect.top + 1 + "px";
             }
-            if (e.clientY + 25 > box.getBoundingClientRect().bottom) {
-                circlePreview.style.top = box.getBoundingClientRect().bottom - 50 + "px";
+            if (circleRect.bottom > boxRect.bottom - 1) {
+                circle.style.top = boxRect.bottom - circleRect.height - 1 + "px";
             }
         }
     });
@@ -75,5 +60,4 @@ export function setBox() {
     box = document.createElement("div");
     box.className = "box";
     document.body.appendChild(box);
-    console.log(box.getBoundingClientRect().bottom);
 }
