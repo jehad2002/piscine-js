@@ -1,15 +1,17 @@
-// Function to pick specified keys from an object
 function pick(obj, keys) {
     const obj2 = {};
+        keys = Array.isArray(keys) ? keys : [keys];
+
     Object.keys(obj).forEach(key => {
         if (keys.includes(key)) {
             obj2[key] = obj[key];
         }
     });
+    
     return obj2;
 }
 
-// Function to omit specified keys from an object
+
 function omit(obj, keys) {
     const obj2 = {};
     Object.keys(obj).forEach(key => {
