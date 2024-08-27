@@ -1,64 +1,73 @@
-// function filter(obj, pre) {
-//     let f = {};
+function filterKeys(obj, predicate) {
+    return Object.keys(obj)
+        .filter(predicate)
+        .reduce((res, key) => {
+            res[key] = obj[key];
+            return res;
+        }, {});
+}
+
+function mapKeys(obj, callback) {
+    return Object.keys(obj)
+        .map(callback)
+        .reduce((res, key, i) => {
+            res[key] = obj[Object.keys(obj)[i]];
+            return res;
+        }, {});
+}
+
+function reduceKeys(obj, callback, initialValue) {
+    let undef = false;
+    if (initialValue === undefined) {
+        initialValue = "";
+        undef = true;
+    }
+    let res = Object.keys(obj).reduce((acc, curr) => {
+        return callback(acc, curr, initialValue);
+    }, initialValue);
+    if (typeof res !== "number") {
+        if (res.slice(0, 2) === ", ") res = res.slice(2);
+        if (undef && res[0] === ":") res = res.slice(1);
+    }
+    return res;
+}
+//====================== try========================
+
+// function filterKeys(obj, predicate) {
+//     let filtered = {};
 //     for (let key in obj) {
-//         if (pre(key)) {
-//             f[key] = obj[key];
+//         if (predicate(key)) {
+//             filtered[key] = obj[key];
 //         }
 //     }
-//     return f;
+//     return filtered;
 // }
 
-// function map(obj, CB) {
-//     let map = {};
-//     for (let key in obj) {
-//         map[CB(key)] = obj[key];
-//     }
-//     return map;
-// }
-
-// function reduce(obj, CB, initialValue = '') {
-//     let acc = initialValue;
-//     for (let key in obj) {
-//         acc = CB(acc, key);
-//     }
-//     return acc;
-// }
-
-// Example usage:
+// Example usage
 // const nutrients = { carbohydrates: 12, protein: 20, fat: 5 };
+// console.log(filterKeys(nutrients, (key) => /protein/.test(key)));
+// Output: { protein: 20 }
 
-// // Adjusted example usage for filter, map, reduce
-// console.log(filter(nutrients, (key) => /protein/.test(key)));
-// // Output: { protein: 20 }
+// function mapKeys(obj, callback) {
+//     let mapped = {};
+//     for (let key in obj) {
+//         mapped[callback(key)] = obj[key];
+//     }
+//     return mapped;
+// }
 
-// console.log(map(nutrients, (key) => `-${key}`));
-// // Output: { -carbohydrates: 12, -protein: 20, -fat: 5 }
+// Example usage
+// console.log(mapKeys(nutrients, (key) => `-${key}`));
+// Output: { -carbohydrates: 12, -protein: 20, -fat: 5 }
 
-// console.log(reduce(nutrients, (acc, key) => acc.concat(', ', key), '').slice(2));
+// function reduceKeys(obj, callback, initialValue) {
+//     let accumulator = initialValue;
+//     for (let key in obj) {
+//         accumulator = callback(accumulator, key);
+//     }
+//     return accumulator;
+// }
+
+// Example usage
+// console.log(reduceKeys(nutrients, (acc, key) => acc.concat(', ', key), '').slice(2));
 // Output: carbohydrates, protein, fat
-
-function filterKeys(obj, pre) {
-    let f = {};
-    for (let key in obj) {
-        if (pre(key)) {
-            f[key] = obj[key];
-        }
-    }
-    return f;
-}
-
-function mapKeys(obj, CB) {
-    let map = {};
-    for (let key in obj) {
-        map[CB(key)] = obj[key];
-    }
-    return map;
-}
-
-function reduceKeys(obj, CB, initialValue) {
-    let acc = initialValue;
-    for (let key in obj) {
-        acc = CB(acc, key);
-    }
-    return acc;
-}
