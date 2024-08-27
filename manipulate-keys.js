@@ -1,4 +1,4 @@
-function filterValues(obj, CB) {
+function filter(obj, CB) {
     let res = {};
     for (let key in obj) {
         if (CB(obj[key])) {
@@ -8,7 +8,7 @@ function filterValues(obj, CB) {
     return res;
 }
 
-function mapValues(obj, CB) {
+function map(obj, CB) {
     let res = {};
     for (let key in obj) {
         res[key] = CB(obj[key]);
@@ -16,7 +16,7 @@ function mapValues(obj, CB) {
     return res;
 }
 
-function reduceValues(obj, CB, acc) {
+function reduce(obj, CB, acc) {
     if (acc === undefined) {
         acc = 0;
     }
