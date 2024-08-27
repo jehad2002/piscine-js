@@ -27,9 +27,9 @@ function fusion(obj1, obj2) {
     return fusioned;
 }
 
-// const is = {};
-// is.num = (n) => typeof n === "number";
-// is.str = (n) => typeof n === "string";
-// is.arr = (n) => Array.isArray(n);
-// is.obj = (n) => typeof n === "object" && !is.fun(n) && !is.arr(n) && n !== null;
-// is.fun = (n) => typeof n === "function";
+const is = {};
+is.num = (n) => typeof n === "number";
+is.str = (n) => typeof n === "string";
+is.arr = (n) => Array.isArray(n);
+is.obj = (n) => typeof n === "object" && !is.fun(n) && !is.arr(n) && n !== null;
+is.fun = (n) => typeof n === "function";
