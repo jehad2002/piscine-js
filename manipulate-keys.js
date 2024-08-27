@@ -8,10 +8,10 @@ function filterKeys(obj, pre) {
     return f;
 }
 
-// // Example usage
+// Example usage:
 // const nutrients = { carbohydrates: 12, protein: 20, fat: 5 };
 // console.log(filterKeys(nutrients, (key) => /protein/.test(key)));
-// // Output: { protein: 20 }
+// Output: { protein: 20 }
 
 function mapKeys(obj, CB) {
     let map = {};
@@ -21,11 +21,12 @@ function mapKeys(obj, CB) {
     return map;
 }
 
-// // Example usage
+// Example usage:
 // console.log(mapKeys(nutrients, (key) => `-${key}`));
-// // Output: { -carbohydrates: 12, -protein: 20, -fat: 5 }
+// Output: { -carbohydrates: 12, -protein: 20, -fat: 5 }
 
-function reduceKeys(obj, CB, initialValue) {
+// Function to reduce keys based on a callback and an initial value
+function reduceKeys(obj, CB, initialValue = '') {
     let acc = initialValue;
     for (let key in obj) {
         acc = CB(acc, key);
@@ -33,6 +34,7 @@ function reduceKeys(obj, CB, initialValue) {
     return acc;
 }
 
-// // Example usage
+// Example usage:
+// const nutrients = { carbohydrates: 12, protein: 20, fat: 5 };
 // console.log(reduceKeys(nutrients, (acc, key) => acc.concat(', ', key), '').slice(2));
 // // Output: carbohydrates, protein, fat
