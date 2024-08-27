@@ -55,7 +55,7 @@ function mapKeys(obj, CB) {
     return map;
 }
 
-function reduceKeys(obj, CB, initialValue = '') {
+function reduceKeys(obj, CB, initialValue) {
     let acc = initialValue;
     for (let key in obj) {
         acc = CB(acc, key);
