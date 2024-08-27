@@ -1,4 +1,4 @@
-function filterKeys(obj, pre) {
+function filter(obj, pre) {
     let f = {};
     for (let key in obj) {
         if (pre(key)) {
@@ -13,7 +13,7 @@ function filterKeys(obj, pre) {
 // console.log(filterKeys(nutrients, (key) => /protein/.test(key)));
 // Output: { protein: 20 }
 
-function mapKeys(obj, CB) {
+function map(obj, CB) {
     let map = {};
     for (let key in obj) {
         map[CB(key)] = obj[key];
@@ -26,7 +26,7 @@ function mapKeys(obj, CB) {
 // Output: { -carbohydrates: 12, -protein: 20, -fat: 5 }
 
 // Function to reduce keys based on a callback and an initial value
-function reduceKeys(obj, CB, initialValue = '') {
+function reduce(obj, CB, initialValue = '') {
     let acc = initialValue;
     for (let key in obj) {
         acc = CB(acc, key);
