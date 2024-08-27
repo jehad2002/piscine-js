@@ -1,12 +1,13 @@
-function filter(obj, CB) {
-    let res = {};
+function filterKeys(obj, predicate) {
+    let f = {};
     for (let key in obj) {
-        if (CB(obj[key])) {
-            res[key] = obj[key];
+        if (predicate(key)) {
+            f[key] = obj[key];
         }
     }
-    return res;
+    return f;
 }
+
 
 function map(obj, CB) {
     let res = {};
