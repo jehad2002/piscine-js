@@ -105,12 +105,3 @@ function findNextWord(arr, pronouns) {
     }
     return undefined;
 }
-
-// Example usage:
-const ex1 = 'Using Array Destructuring, you you can iterate through objects easily.';
-console.log(pronoun(ex1));
-// Output: { you: { word: [ 'can' ], count: 2 } }
-
-const ex2 = 'If he you want to buy something you have to pay.';
-console.log(pronoun(ex2));
-// Output: { he: { word: [], count: 1 }, you: { word: [ 'want', 'have' ], count: 2 } }
