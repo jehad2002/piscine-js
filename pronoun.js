@@ -17,7 +17,7 @@ function pronoun(str) {
     for (let i = 0; i < arr.length; i++) {
         const word = arr[i].toLowerCase();
         if (pronouns.has(word)) {
-            const nextWord = findNextWord(arr.slice(i + 1));
+            const nextWord = findNextWord(arr.slice(i + 1), pronouns);
             increment(word, nextWord);
         }
     }
@@ -25,8 +25,7 @@ function pronoun(str) {
     return obj;
 }
 
-function findNextWord(arr) {
-    const pronouns = new Set(["i", "you", "he", "she", "it", "they", "we"]);
+function findNextWord(arr, pronouns) {
     for (const word of arr) {
         const cleanedWord = word.replace(/,/, "");
         if (!pronouns.has(cleanedWord.toLowerCase())) {
