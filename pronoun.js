@@ -12,16 +12,14 @@ function pronoun(str) {
         }
     };
 
+    const pronouns = new Set(["i", "you", "he", "she", "it", "they", "we"]);
+
     for (let i = 0; i < arr.length; i++) {
         const word = arr[i].toLowerCase();
-        const nextWord = findNextWord(arr.slice(i + 1));
-        if (["i", "you", "he", "she", "it", "they", "we"].includes(word)) {
+        if (pronouns.has(word)) {
+            const nextWord = findNextWord(arr.slice(i + 1));
             increment(word, nextWord);
         }
-    }
-
-    for (const key in obj) {
-        obj[key].word = obj[key].word.filter(x => x !== undefined);
     }
 
     return obj;
@@ -30,8 +28,9 @@ function pronoun(str) {
 function findNextWord(arr) {
     const pronouns = new Set(["i", "you", "he", "she", "it", "they", "we"]);
     for (const word of arr) {
-        if (!pronouns.has(word.toLowerCase())) {
-            return word.replace(/,/, "");
+        const cleanedWord = word.replace(/,/, "");
+        if (!pronouns.has(cleanedWord.toLowerCase())) {
+            return cleanedWord;
         }
     }
     return undefined;
