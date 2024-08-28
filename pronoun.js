@@ -71,16 +71,15 @@
 //         }
 //     }
 // }
-//=============================================================
 
 function pronoun(str) {
     const obj = {};
     const arr = str.split(/\s+/); // Split by any whitespace including new lines
-
     const pronouns = new Set(["i", "you", "he", "she", "it", "they", "we"]);
 
     for (let i = 0; i < arr.length; i++) {
         const word = arr[i].toLowerCase().replace(/[.,?!;:()'"]/g, ""); // Clean punctuation
+
         if (pronouns.has(word)) {
             if (!obj[word]) {
                 obj[word] = { count: 0, word: [] };
