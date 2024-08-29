@@ -5,20 +5,24 @@ function interpolation({
     CB = () => {},
     duration = 0,
 } = {}) {
-    if (duration <= 0 || step <= 0) {
+    if (step <= 0 || duration <= 0) {
         CB([start, 0]);
         return;
     }
+
     const delta = (end - start) / step;
     let current = start;
     let i = 0;
+    let accumulatedDuration = 0;
+
     const timer = setInterval(() => {
         if (i < step) {
-            CB([current, (duration / step) * (i + 1)]);
+            accumulatedDuration += duration / step;
             current += delta;
             i++;
         } else {
             clearInterval(timer);
+            CB([current, accumulatedDuration]);
         }
     }, duration / step);
 }
