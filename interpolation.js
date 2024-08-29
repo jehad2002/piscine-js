@@ -2,27 +2,19 @@ function interpolation({
     step = 0,
     start = 0,
     end = 0,
-    CB = () => {},
+    callback = () => {},
     duration = 0,
 } = {}) {
-    if (step <= 0 || duration <= 0) {
-        CB([start, 0]);
-        return;
-    }
-
     const delta = (end - start) / step;
     let current = start;
     let i = 0;
-    let accumulatedDuration = 0;
-
     const timer = setInterval(() => {
         if (i < step) {
-            accumulatedDuration += duration / step;
+            callback([current, (duration / step) * (i + 1)]);
             current += delta;
             i++;
         } else {
             clearInterval(timer);
-            CB([current, accumulatedDuration]);
         }
     }, duration / step);
 }
