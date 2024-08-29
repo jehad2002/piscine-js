@@ -1,26 +1,32 @@
-
-async function getJSON(path = '', params = {}) {
-    const url =
-        path +
-        '?' +
-        Object.keys(params)
-            .map((key) => {
-                return (
-                    key.replace(' ', '+') +
-                    '=' +
-                    params[key].toString().replace(' ', '+')
-                );
-            })
-            .join('&');
-    const res = await fetch(url).then((response) => {
-        if (response.ok) {
-            return response.json();
-        } else {
-            throw new Error(response.statusText);
+function retry(count = 3, callback = async () => {}) {
+    return async function (...args) {
+        try {
+            const res = await callback(...args);
+            return res;
+        } catch (e) {
+            if (count > 0) {
+                return retry(count - 1, callback)(...args);
+            } else {
+                throw e;
+            }
         }
-    });
-    if (res.error) {
-        throw new Error(res.error);
-    }
-    return res.data;
+    };
+}
+
+function timeout(delay = 0, callback = async () => {}) {
+    return async function (...args) {
+        const timeout = new Promise((resolve) =>
+            setTimeout(resolve, delay, Error('timeout'))
+        );
+        const functionCall = new Promise((resolve) =>
+            resolve(callback(...args))
+        );
+        const res = await Promise.race([timeout, functionCall]).then(
+            (res) => res
+        );
+        if (res instanceof Error) {
+            throw res;
+        }
+        return res;
+    };
 }
