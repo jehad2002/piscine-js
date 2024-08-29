@@ -5,6 +5,10 @@ function interpolation({
     CB = () => {},
     duration = 0,
 } = {}) {
+    if (duration <= 0 || step <= 0) {
+        CB([start, 0]);
+        return;
+    }
     const delta = (end - start) / step;
     let current = start;
     let i = 0;
