@@ -1,5 +1,3 @@
-
-
 async function series(arr) {
     var result = [];
     for (const item of arr) {
