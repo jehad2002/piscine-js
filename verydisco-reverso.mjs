@@ -3,7 +3,7 @@ import { readFile } from 'fs/promises';
 // Function to reverse the transformation applied by the verydisco function
 const reverseTransform = (word) => {
   const len = word.length;
-  const halfLen = Math.floor(len / 2);  // Use Math.floor to determine the split point
+  const halfLen = Math.ceil(len / 2);  // Using Math.ceil to correctly identify the split point
   const firstHalf = word.slice(-halfLen);  // Last halfLen characters
   const secondHalf = word.slice(0, len - halfLen);  // Remaining characters from the start
   return firstHalf + secondHalf;
