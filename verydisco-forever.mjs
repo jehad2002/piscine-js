@@ -1,44 +1,42 @@
-// Requiring fs module in which
-// writeFile function is defined.
-const fs = require('fs')
+import { writeFile } from 'fs/promises';
 
-// Data which will write in a file.
-let data = "Hello world."
-
-// Write data in 'Hello.txt' .
-fs.writeFile('Hello.txt', data, (err) => {
-
-    // In case of a error throw err.
-    if (err) throw err;
-})
-import fs from 'fs';
+// Function to transform a word by swapping its halves
 const transformWord = (word) => {
-    const len = word.length;
-    const halfLen = Math.ceil(len / 2);
-    const firstHalf = word.slice(0, halfLen);
-    const secondHalf = word.slice(halfLen);
-    return secondHalf + firstHalf;
+  const len = word.length;
+  const halfLen = Math.ceil(len / 2);
+  const firstHalf = word.slice(0, halfLen);
+  const secondHalf = word.slice(halfLen);
+  return secondHalf + firstHalf;
 };
 
-const main = () => {
-    const argument = process.argv[2];
+// Function to handle the main logic of transforming and writing the result
+async function main() {
+  const argument = process.argv[2];  // Get the argument passed from the command line
 
-    if (!argument) {
-        console.log("Please provide an argument.");
-        return;
-    }
+  if (!argument) {
+    console.log("Please provide an argument.");
+    return;
+  }
 
-    if (argument.includes(' ')) {
-        const words = argument.split(' ');
-        const transformedWords = words.map(transformWord);
-        const resultSentence = transformedWords.join(' ');
-        console.log(resultSentence);
-    } else {
-        const resultWord = transformWord(argument);
-        console.log(resultWord);
-    }
-};
+  let result;
 
-main();
+  if (argument.includes(' ')) {
+    const words = argument.split(' ');  // Split the sentence into words
+    const transformedWords = words.map(transformWord);  // Transform each word
+    result = transformedWords.join(' ');  // Join the transformed words back into a sentence
+  } else {
+    result = transformWord(argument);  // Transform the single word
+  }
+
+  try {
+    await writeFile('verydisco-forever.txt', result);  // Write the result to the file
+    console.log('Result written to verydisco-forever.txt');
+  } catch (err) {
+    console.error('Error writing to file:', err);  // Handle any errors during file write
+  }
+}
+
+main();  // Execute the main function
+
 
 // node --experimental-modules verydisco-forever.mjs "Node is awesome"
