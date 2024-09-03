@@ -28,4 +28,4 @@ const main = () => {
 
 main();
 
-//node verydisco.mjs "Node is awesome"
+// node --experimental-modules verydisco-forever.mjs "Node is awesome"
