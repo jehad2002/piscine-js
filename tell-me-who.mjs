@@ -6,13 +6,15 @@ async function listGuests(directoryPath) {
         // Read the directory contents
         const files = await fs.readdir(directoryPath);
 
-        // Filter out non-text files if needed
-        const textFiles = files.filter(file => path.extname(file) === '.txt');
+        // Filter out non-JSON files
+        const jsonFiles = files.filter(file => path.extname(file) === '.json');
 
         // Map the filenames to names
-        const namesPromises = textFiles.map(async (file) => {
-            const filePath = path.join(directoryPath, file);
-            const [lastname, firstname] = path.basename(file, '.txt').split('-');
+        const namesPromises = jsonFiles.map(async (file) => {
+            // Extract base name without extension
+            const baseName = path.basename(file, '.json');
+            // Split the base name to get lastname and firstname
+            const [firstname, lastname] = baseName.split('_');
             return `${lastname} ${firstname}`;
         });
 
