@@ -66,22 +66,60 @@
 
 // #!/usr/bin/env node
 
-const args = process.argv.slice(2); 
+// const args = process.argv.slice(2); 
 
-if (args.length === 0) {
-  console.log("Please provide an argument.");
-  process.exit(1);
-}
+// if (args.length === 0) {
+//   console.log("Please provide an argument.");
+//   process.exit(1);
+// }
 
-const veryDisco = (input) => {
-  return input.split(' ').map(word => {
-    const halfLength = Math.ceil(word.length / 2);
-    const firstHalf = word.slice(0, halfLength);
-    const secondHalf = word.slice(halfLength);
+// const veryDisco = (input) => {
+//   return input.split(' ').map(word => {
+//     const halfLength = Math.ceil(word.length / 2);
+//     const firstHalf = word.slice(0, halfLength);
+//     const secondHalf = word.slice(halfLength);
+//     return secondHalf + firstHalf;
+//   }).join(' ');
+// };
+
+// const input = args.join(' ');
+// const result = veryDisco(input);
+// console.log(result);
+//=========================
+
+// verydisco.mjs
+
+// Function to transform a single word into "very disco" style
+const transformWord = (word) => {
+    const len = word.length;
+    const halfLen = Math.ceil(len / 2);
+    const firstHalf = word.slice(0, halfLen);
+    const secondHalf = word.slice(halfLen);
     return secondHalf + firstHalf;
-  }).join(' ');
 };
 
-const input = args.join(' ');
-const result = veryDisco(input);
-console.log(result);
+// Main function to process command line arguments
+const main = () => {
+    // Get the first argument passed after the program name
+    const argument = process.argv[2];
+
+    if (!argument) {
+        console.log("Please provide an argument.");
+        return;
+    }
+
+    // If the argument contains spaces, treat each part as a word
+    if (argument.includes(' ')) {
+        const words = argument.split(' ');
+        const transformedWords = words.map(transformWord);
+        const resultSentence = transformedWords.join(' ');
+        console.log(resultSentence);
+    } else {
+        // If it's a single word, transform it directly
+        const resultWord = transformWord(argument);
+        console.log(resultWord);
+    }
+};
+
+// Call the main function to start the process
+main();
