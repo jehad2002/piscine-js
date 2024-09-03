@@ -1,28 +1,63 @@
-// verydisco.mjs
+// function transformWord(word) {
+//     const length = word.length;
+//     const halfLength = Math.ceil(length / 2);
+    
+//     const firstHalf = word.slice(0, halfLength);
+//     const secondHalf = word.slice(halfLength);
+    
+//     const transformedWord = secondHalf + firstHalf;
+    
+//     return transformedWord;
+// }
+// const args = process.argv.slice(2); 
+// const input = args.join(' '); 
 
-// Function to transform a single word into a "very disco" style word
-function transformWord(word) {
-    const length = word.length;
-    const halfLength = Math.ceil(length / 2);
-    
-    const firstHalf = word.slice(0, halfLength);
-    const secondHalf = word.slice(halfLength);
-    
-    // Reverse the order of halves and concatenate them
-    const transformedWord = secondHalf + firstHalf;
-    
-    return transformedWord;
+// const words = input.split(' ');
+
+// words.forEach(word => {
+//     const transformed = transformWord(word);
+//     console.log(transformed);
+// });
+
+import fs from 'fs/promises'
+const readFile = fs.readFile
+const writeFile = fs.writeFile
+import { promisify } from 'util'
+import * as cp from 'child_process'
+
+const exec = promisify(cp.exec)
+
+export const tests = []
+const name = 'verydisco-reverso'
+const hasContentAndExpect = async ({ content, expect, path, eq }) => {
+  const cwd = `${path
+    .split('/')
+    .slice(0, -1)
+    .join('/')}/`
+
+  await writeFile(`${cwd}${name}.txt`, content, 'utf8')
+  const { stdout } = await exec(`node ${name}.mjs "${name}.txt"`, { cwd })
+  await exec(`rm ${name}.txt`, { cwd })
+
+  return eq(stdout.trim(), expect)
 }
 
-// Process command line arguments
-const args = process.argv.slice(2); // Get all arguments after "node" and script name
-const input = args.join(' '); // Join all arguments into a single string
+tests.push(async ({ path, eq }) =>
+  hasContentAndExpect({
+    path,
+    eq,
+    content: `deNo si omeawes`,
+    expect: 'Node is awesome',
+  }),
+)
 
-// Split the input into words
-const words = input.split(' ');
+// tests.push(async ({ path, eq }) => {
+//   await hasContentAndExpect({
+//     path,
+//     eq,
+//     content: // newfilename,
+//     expect: // reverso
+//   })
+// })
 
-// Transform each word and collect the result
-const transformedWords = words.map(transformWord);
-
-// Print the final result as a single line with spaces between the transformed words
-console.log(transformedWords.join(' '));
+Object.freeze(tests)
