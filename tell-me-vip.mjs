@@ -40,49 +40,42 @@
 import { readFile, writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 
-// Function to process guests and save VIP list
+// دالة لمعالجة الضيوف وحفظ قائمة VIP
 const processGuests = async (dirPath) => {
-  const invitationsPath = join(dirPath, 'invitations.json');  // Path to invitations.json
-  const vipListPath = join(dirPath, 'vip.txt');  // Path to vip.txt
+  const invitationsPath = join(dirPath, 'invitations.json');  // المسار إلى invitations.json
+  const vipListPath = join(dirPath, 'vip.txt');  // المسار إلى vip.txt
 
-  // Ensure the directory exists
+  // التأكد من وجود الدليل
   try {
     await mkdir(dirPath, { recursive: true });
   } catch (err) {
-    console.error('Error creating directory:', err);
+    console.error('خطأ في إنشاء الدليل:', err);
     throw err;
   }
 
   try {
-    // Try to read invitations.json
+    // قراءة ملف invitations.json
     const data = await readFile(invitationsPath, 'utf8');
     const invitations = JSON.parse(data);
 
-    // Filter guests who answered 'YES'
+    // تصفية الضيوف الذين أجابوا بـ 'YES'
     const vipGuests = invitations.filter(guest => guest.response === 'YES');
 
-    // Sort guests by their last name
+    // ترتيب الضيوف حسب اسم العائلة (ترتيب أبجدي تصاعدي)
     vipGuests.sort((a, b) => a.lastname.localeCompare(b.lastname));
 
-    // Format guests as: Number. Lastname Firstname
+    // تنسيق الضيوف: رقم. اسم العائلة الاسم الأول
     const formattedGuests = vipGuests.map((guest, index) => `${index + 1}. ${guest.lastname} ${guest.firstname}\n`);
 
-    // Write the formatted list to vip.txt (or create an empty vip.txt if no VIP guests)
-    await writeFile(vipListPath, formattedGuests.join('') || '', 'utf8');
+    // كتابة القائمة المنسقة إلى vip.txt
+    await writeFile(vipListPath, formattedGuests.join(''), 'utf8');
 
-    console.log('VIP list saved to vip.txt.');
+    console.log('تم حفظ قائمة VIP إلى vip.txt.');
   } catch (err) {
-    if (err.code === 'ENOENT') {
-      // If invitations.json doesn't exist, create an empty vip.txt
-      await writeFile(vipListPath, '', 'utf8');
-      console.log('No invitations found, created an empty vip.txt.');
-    } else {
-      console.error('Error reading or writing files:', err);
-      throw err;
-    }
+    console.error('خطأ في قراءة أو كتابة الملفات:', err);
   }
 };
 
-// Usage example: replace 'your-directory-path' with the actual path where invitations.json is located
-const dirPath = process.argv[2] || '.'; // Accept directory path as command line argument or default to current directory
+// استخدام الدالة: قم بتمرير مسار الدليل الديناميكي
+const dirPath = process.argv[2] || '.'; // قبول مسار الدليل كوسيط سطر أوامر أو الافتراضي إلى الدليل الحالي
 processGuests(dirPath);
