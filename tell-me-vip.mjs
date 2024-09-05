@@ -36,8 +36,14 @@
 //   .catch(err => console.error('Error:', err));
 
 //==================================
+
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Derive __dirname equivalent
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Define the path to the JSON file and the output text file
 const jsonFilePath = path.join(__dirname, 'guests.json');
