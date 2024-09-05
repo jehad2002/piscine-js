@@ -1,0 +1,8 @@
+[
+    { "firstname": "John", "lastname": "Doe", "response": "YES" },
+    { "firstname": "Jane", "lastname": "Smith", "response": "NO" },
+    { "firstname": "Albert", "lastname": "Einstein", "response": "YES" },
+    { "firstname": "Marie", "lastname": "Curie", "response": "YES" },
+    { "firstname": "Isaac", "lastname": "Newton", "response": "NO" }
+  ]
+  
