@@ -35,9 +35,9 @@
 //   })
 //   .catch(err => console.error('Error:', err));
 
-import { readFile, writeFile, mkdir } from 'fs/promises';  // Import file system promises
-import { join } from 'path';  // Import path for handling file paths
-import { mkdirSync } from 'fs';  // Synchronous mkdir for ensuring directory existence
+import { readFile, writeFile, mkdir } from 'fs/promises';  // Import async file operations
+import { join } from 'path';  // Import path module for file paths
+import { mkdirSync } from 'fs';  // Import mkdirSync for creating directories
 
 const processGuests = async (dirPath) => {
   const invitationsPath = join(dirPath, 'invitations.json');  // Path to invitations.json
@@ -47,8 +47,20 @@ const processGuests = async (dirPath) => {
     // Ensure the directory exists
     mkdirSync(dirPath, { recursive: true });
 
-    // Try to read invitations.json
-    const data = await readFile(invitationsPath, 'utf8');
+    // Try to read invitations.json, if the file doesn't exist, return an empty vip.txt
+    let data;
+    try {
+      data = await readFile(invitationsPath, 'utf8');
+    } catch (err) {
+      if (err.code === 'ENOENT') {
+        // If invitations.json doesn't exist, create an empty vip.txt and return
+        await writeFile(vipListPath, '', 'utf8');
+        console.log('No invitations found, created an empty vip.txt.');
+        return;
+      }
+      throw err;  // If there's another error, throw it
+    }
+
     const invitations = JSON.parse(data);
 
     // Filter guests who answered 'YES'
@@ -65,17 +77,10 @@ const processGuests = async (dirPath) => {
 
     console.log('VIP list has been successfully saved to vip.txt.');
   } catch (err) {
-    if (err.code === 'ENOENT') {
-      // If invitations.json doesn't exist, create an empty vip.txt
-      await writeFile(vipListPath, '', 'utf8');
-      console.log('No invitations found, created an empty vip.txt.');
-    } else {
-      console.error('Error:', err);
-      throw err;
-    }
+    console.error('Error:', err);
+    throw err;
   }
 };
 
-// Usage example: replace 'your-directory-path' with the actual path where invitations.json is located
-const dirPath = './your-directory-path';
-processGuests(dirPath);
+// Export the function for testing purposes
+export { processGuests };
