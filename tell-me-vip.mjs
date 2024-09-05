@@ -72,7 +72,14 @@ const processGuests = async (dirPath) => {
 
     console.log('تم حفظ قائمة VIP إلى vip.txt.');
   } catch (err) {
-    console.error('خطأ في قراءة أو كتابة الملفات:', err);
+    if (err.code === 'ENOENT') {
+      // إذا كان invitations.json غير موجود، إنشاء vip.txt فارغ
+      await writeFile(vipListPath, '', 'utf8');
+      console.log('لم يتم العثور على ملف invitations.json، تم إنشاء vip.txt فارغ.');
+    } else {
+      console.error('خطأ في قراءة أو كتابة الملفات:', err);
+      throw err;
+    }
   }
 };
 
