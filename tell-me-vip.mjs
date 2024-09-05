@@ -39,7 +39,6 @@
 
 import { readFile, writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
-import { mkdirSync } from 'fs';
 
 // Function to process guests and save VIP list
 const processGuests = async (dirPath) => {
@@ -48,7 +47,7 @@ const processGuests = async (dirPath) => {
 
   // Ensure the directory exists
   try {
-    mkdirSync(dirPath, { recursive: true });
+    await mkdir(dirPath, { recursive: true });
   } catch (err) {
     console.error('Error creating directory:', err);
     throw err;
@@ -84,5 +83,6 @@ const processGuests = async (dirPath) => {
   }
 };
 
-// Export function for testing
-export { processGuests };
+// Usage example: replace 'your-directory-path' with the actual path where invitations.json is located
+const dirPath = process.argv[2] || '.'; // Accept directory path as command line argument or default to current directory
+processGuests(dirPath);
