@@ -35,36 +35,44 @@
 //   })
 //   .catch(err => console.error('Error:', err));
 
-import { readFile, writeFile } from 'fs/promises';  // Import file reading and writing methods
-import { join } from 'path';  // Import the path module to handle file paths
+import { readFile, writeFile, mkdir } from 'fs/promises';  // Import file system promises
+import { join } from 'path';  // Import path for handling file paths
+import { mkdirSync } from 'fs';  // Synchronous mkdir for ensuring directory existence
 
 const processGuests = async (dirPath) => {
   const invitationsPath = join(dirPath, 'invitations.json');  // Path to invitations.json
-  const vipListPath = join(dirPath, 'vip.txt');  // Path to the output vip.txt file
+  const vipListPath = join(dirPath, 'vip.txt');  // Path to vip.txt
 
   try {
-    // Read the invitations JSON file
+    // Ensure the directory exists
+    mkdirSync(dirPath, { recursive: true });
+
+    // Try to read invitations.json
     const data = await readFile(invitationsPath, 'utf8');
-    const invitations = JSON.parse(data);  // Parse the JSON file
+    const invitations = JSON.parse(data);
 
     // Filter guests who answered 'YES'
     const vipGuests = invitations.filter(guest => guest.response === 'YES');
 
-    // Sort guests by their last name in alphabetical order
+    // Sort guests by their last name
     vipGuests.sort((a, b) => a.lastname.localeCompare(b.lastname));
 
     // Format guests as: Number. Lastname Firstname
     const formattedGuests = vipGuests.map((guest, index) => `${index + 1}. ${guest.lastname} ${guest.firstname}\n`);
 
-    // Write the formatted guests to vip.txt
-    await writeFile(vipListPath, formattedGuests.join(''), 'utf8');
+    // Write the formatted list to vip.txt (or an empty file if no VIP guests)
+    await writeFile(vipListPath, formattedGuests.join('') || '', 'utf8');
 
     console.log('VIP list has been successfully saved to vip.txt.');
   } catch (err) {
-    console.error('Error:', err);
+    if (err.code === 'ENOENT') {
+      // If invitations.json doesn't exist, create an empty vip.txt
+      await writeFile(vipListPath, '', 'utf8');
+      console.log('No invitations found, created an empty vip.txt.');
+    } else {
+      console.error('Error:', err);
+      throw err;
+    }
   }
 };
 
-// Usage example: replace 'your-directory-path' with the actual path where invitations.json is located
-const dirPath = './your-directory-path';
-processGuests(dirPath);
