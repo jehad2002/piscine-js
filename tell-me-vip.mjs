@@ -76,3 +76,6 @@ const processGuests = async (dirPath) => {
   }
 };
 
+// Usage example: replace 'your-directory-path' with the actual path where invitations.json is located
+const dirPath = './your-directory-path';
+processGuests(dirPath);
