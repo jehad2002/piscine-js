@@ -36,53 +36,51 @@
 //   .catch(err => console.error('Error:', err));
 
 //==================================
+import fs from 'fs';
+import path from 'path';
 
-import { readFile, writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
+// Define the path to the JSON file and the output text file
+const jsonFilePath = path.join(__dirname, 'guests.json');
+const outputFilePath = path.join(__dirname, 'vip.txt');
 
-// دالة لمعالجة الضيوف وحفظ قائمة VIP
-const processGuests = async (dirPath) => {
-  const invitationsPath = join(dirPath, 'invitations.json');  // المسار إلى invitations.json
-  const vipListPath = join(dirPath, 'vip.txt');  // المسار إلى vip.txt
-
-  // التأكد من وجود الدليل
-  try {
-    await mkdir(dirPath, { recursive: true });
-  } catch (err) {
-    console.error('خطأ في إنشاء الدليل:', err);
-    throw err;
+// Read and parse the JSON file
+fs.readFile(jsonFilePath, 'utf8', (err, data) => {
+  if (err) {
+    console.error('Error reading the JSON file:', err);
+    return;
   }
 
+  let guests;
   try {
-    // قراءة ملف invitations.json
-    const data = await readFile(invitationsPath, 'utf8');
-    const invitations = JSON.parse(data);
+    guests = JSON.parse(data);
+  } catch (parseError) {
+    console.error('Error parsing the JSON file:', parseError);
+    return;
+  }
 
-    // تصفية الضيوف الذين أجابوا بـ 'YES'
-    const vipGuests = invitations.filter(guest => guest.response === 'YES');
+  // Filter the guests who answered "YES"
+  const vipGuests = guests.filter(guest => guest.response === 'YES');
 
-    // ترتيب الضيوف حسب اسم العائلة (ترتيب أبجدي تصاعدي)
-    vipGuests.sort((a, b) => a.lastname.localeCompare(b.lastname));
-
-    // تنسيق الضيوف: رقم. اسم العائلة الاسم الأول
-    const formattedGuests = vipGuests.map((guest, index) => `${index + 1}. ${guest.lastname} ${guest.firstname}\n`);
-
-    // كتابة القائمة المنسقة إلى vip.txt
-    await writeFile(vipListPath, formattedGuests.join(''), 'utf8');
-
-    console.log('تم حفظ قائمة VIP إلى vip.txt.');
-  } catch (err) {
-    if (err.code === 'ENOENT') {
-      // إذا كان invitations.json غير موجود، إنشاء vip.txt فارغ
-      await writeFile(vipListPath, '', 'utf8');
-      console.log('لم يتم العثور على ملف invitations.json، تم إنشاء vip.txt فارغ.');
-    } else {
-      console.error('خطأ في قراءة أو كتابة الملفات:', err);
-      throw err;
+  // Sort guests alphabetically by Lastname then Firstname
+  vipGuests.sort((a, b) => {
+    if (a.lastname !== b.lastname) {
+      return a.lastname.localeCompare(b.lastname);
     }
-  }
-};
+    return a.firstname.localeCompare(b.firstname);
+  });
 
-// استخدام الدالة: قم بتمرير مسار الدليل الديناميكي
-const dirPath = process.argv[2] || '.'; // قبول مسار الدليل كوسيط سطر أوامر أو الافتراضي إلى الدليل الحالي
-processGuests(dirPath);
+  // Format the list
+  const formattedList = vipGuests.map((guest, index) => 
+    `${index + 1}. ${guest.lastname} ${guest.firstname}`
+  ).join('\n');
+
+  // Write the formatted list to the output file
+  fs.writeFile(outputFilePath, formattedList, 'utf8', (err) => {
+    if (err) {
+      console.error('Error writing the VIP list to the file:', err);
+    } else {
+      console.log('VIP list saved to vip.txt');
+    }
+  });
+});
+
