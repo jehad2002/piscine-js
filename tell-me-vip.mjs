@@ -35,38 +35,36 @@
 //   })
 //   .catch(err => console.error('Error:', err));
 
-import { readFile, writeFile, mkdir, existsSync } from 'fs/promises';
-import { join } from 'path';
-import { mkdirSync, writeFileSync } from 'fs';
+import { readFile, writeFile } from 'fs/promises';  // Import file reading and writing methods
+import { join } from 'path';  // Import the path module to handle file paths
 
 const processGuests = async (dirPath) => {
-  const invitationsPath = join(dirPath, 'invitations.json');
-  const vipListPath = join(dirPath, 'vip.txt');
+  const invitationsPath = join(dirPath, 'invitations.json');  // Path to invitations.json
+  const vipListPath = join(dirPath, 'vip.txt');  // Path to the output vip.txt file
 
   try {
-    // Ensure the directory exists
-    mkdirSync(dirPath, { recursive: true });
-
-    // Check if vip.txt exists
-    if (!existsSync(vipListPath)) {
-      // If it doesn't exist, create an empty file
-      writeFileSync(vipListPath, '');
-    }
-
+    // Read the invitations JSON file
     const data = await readFile(invitationsPath, 'utf8');
-    const invitations = JSON.parse(data);
+    const invitations = JSON.parse(data);  // Parse the JSON file
+
+    // Filter guests who answered 'YES'
     const vipGuests = invitations.filter(guest => guest.response === 'YES');
 
+    // Sort guests by their last name in alphabetical order
     vipGuests.sort((a, b) => a.lastname.localeCompare(b.lastname));
 
+    // Format guests as: Number. Lastname Firstname
     const formattedGuests = vipGuests.map((guest, index) => `${index + 1}. ${guest.lastname} ${guest.firstname}\n`);
-    
+
+    // Write the formatted guests to vip.txt
     await writeFile(vipListPath, formattedGuests.join(''), 'utf8');
-    console.log('Success: VIP list saved to vip.txt.');
+
+    console.log('VIP list has been successfully saved to vip.txt.');
   } catch (err) {
     console.error('Error:', err);
-    throw err;
   }
 };
 
-export { processGuests };
+// Usage example: replace 'your-directory-path' with the actual path where invitations.json is located
+const dirPath = './your-directory-path';
+processGuests(dirPath);
