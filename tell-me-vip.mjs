@@ -1,39 +1,88 @@
+// import { readFile, writeFile, mkdir } from 'fs/promises';
+// import { join, dirname } from 'path';
+// import { fileURLToPath } from 'url';
+// import { mkdirSync } from 'fs';
+
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = dirname(__filename);
+
+// const invitationsPath = join(__dirname, 'invitations.json');
+// const vipListPath = join(__dirname, 'vip.txt');
+
+// // Create directory if it doesn't exist
+// try {
+//   mkdirSync(__dirname, { recursive: true });
+// } catch (err) {
+//   console.error('Error creating directory:', err);
+// }
+
+// readFile(invitationsPath, 'utf8')
+//   .then(data => {
+//     const invitations = JSON.parse(data);
+//     const vipGuests = invitations.filter(guest => guest.response === 'YES');
+    
+//     vipGuests.sort((a, b) => {
+//       if (a.lastname < b.lastname) return -1;
+//       if (a.lastname > b.lastname) return 1;
+//       return 0;
+//     });
+
+//     const formattedGuests = vipGuests.map((guest, index) => `${index + 1}. ${guest.lastname} ${guest.firstname}\n`);
+//     return writeFile(vipListPath, formattedGuests.join(''), 'utf8');
+//   })
+//   .then(() => {
+//     console.log('Success: VIP list saved to vip.txt.');
+//   })
+//   .catch(err => console.error('Error:', err));
+
+//==================================
+
 import { readFile, writeFile, mkdir } from 'fs/promises';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { join } from 'path';
 import { mkdirSync } from 'fs';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// Function to process guests and save VIP list
+const processGuests = async (dirPath) => {
+  const invitationsPath = join(dirPath, 'invitations.json');  // Path to invitations.json
+  const vipListPath = join(dirPath, 'vip.txt');  // Path to vip.txt
 
-const invitationsPath = join(__dirname, 'invitations.json');
-const vipListPath = join(__dirname, 'vip.txt');
+  // Ensure the directory exists
+  try {
+    mkdirSync(dirPath, { recursive: true });
+  } catch (err) {
+    console.error('Error creating directory:', err);
+    throw err;
+  }
 
-// Create directory if it doesn't exist
-try {
-  mkdirSync(__dirname, { recursive: true });
-} catch (err) {
-  console.error('Error creating directory:', err);
-}
-
-readFile(invitationsPath, 'utf8')
-  .then(data => {
+  try {
+    // Try to read invitations.json
+    const data = await readFile(invitationsPath, 'utf8');
     const invitations = JSON.parse(data);
+
+    // Filter guests who answered 'YES'
     const vipGuests = invitations.filter(guest => guest.response === 'YES');
-    
-    vipGuests.sort((a, b) => {
-      if (a.lastname < b.lastname) return -1;
-      if (a.lastname > b.lastname) return 1;
-      return 0;
-    });
 
+    // Sort guests by their last name
+    vipGuests.sort((a, b) => a.lastname.localeCompare(b.lastname));
+
+    // Format guests as: Number. Lastname Firstname
     const formattedGuests = vipGuests.map((guest, index) => `${index + 1}. ${guest.lastname} ${guest.firstname}\n`);
-    return writeFile(vipListPath, formattedGuests.join(''), 'utf8');
-  })
-  .then(() => {
-    console.log('Success: VIP list saved to vip.txt.');
-  })
-  .catch(err => console.error('Error:', err));
 
+    // Write the formatted list to vip.txt (or create an empty vip.txt if no VIP guests)
+    await writeFile(vipListPath, formattedGuests.join('') || '', 'utf8');
 
+    console.log('VIP list saved to vip.txt.');
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      // If invitations.json doesn't exist, create an empty vip.txt
+      await writeFile(vipListPath, '', 'utf8');
+      console.log('No invitations found, created an empty vip.txt.');
+    } else {
+      console.error('Error reading or writing files:', err);
+      throw err;
+    }
+  }
+};
 
+// Export function for testing
+export { processGuests };
