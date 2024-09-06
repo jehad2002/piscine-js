@@ -45,6 +45,9 @@ async function listGuests(directoryPath) {
         // Define the path for vip.txt
         const outputFilePath = path.join(directoryPath, 'vip.txt');
 
+        // Ensure the directory exists
+        await fs.mkdir(directoryPath, { recursive: true });
+
         // Write the formatted list to the output file
         await fs.writeFile(outputFilePath, formattedList, 'utf8');
         console.log('VIP list saved to vip.txt');
