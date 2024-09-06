@@ -37,14 +37,18 @@ async function listGuests(directoryPath) {
             return a.firstname.localeCompare(b.firstname);
         });
 
-        // Format the list and write to vip.txt
+        // Format the list
         const formattedList = vipGuests.map((guest, index) =>
             `${index + 1}. ${guest.lastname} ${guest.firstname}`
         ).join('\n');
 
+        // Define the path for vip.txt
         const outputFilePath = path.join(directoryPath, 'vip.txt');
+
+        // Write the formatted list to the output file
         await fs.writeFile(outputFilePath, formattedList, 'utf8');
         console.log('VIP list saved to vip.txt');
+
     } catch (error) {
         console.error('Error reading directory or processing files:', error);
     }
