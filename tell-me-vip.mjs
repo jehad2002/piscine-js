@@ -1,66 +1,146 @@
-import { promises as fs } from 'fs';
+// import fs from 'fs';
+// import path from 'path';
+// import { fileURLToPath } from 'url';
+
+// // Derive __dirname equivalent
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
+
+// // Define the path to the JSON file and the output text file
+// const jsonFilePath = path.join(__dirname, 'guests.json');
+// const outputFilePath = path.join(__dirname, 'vip.txt');
+
+// // Check if the JSON file exists
+// fs.access(jsonFilePath, fs.constants.F_OK, (err) => {
+//   if (err) {
+//     console.log('No guests.json file found. Creating default file.');
+//     const defaultData = JSON.stringify([]);
+//     fs.writeFile(jsonFilePath, defaultData, 'utf8', (writeErr) => {
+//       if (writeErr) {
+//         console.error('Error creating the default JSON file:', writeErr);
+//         return;
+//       }
+//       console.log('Default guests.json file created.');
+//       processAndSaveVIPList();
+//     });
+//   } else {
+//     processAndSaveVIPList();
+//   }
+// });
+
+// function processAndSaveVIPList() {
+//   // Read and parse the JSON file
+//   fs.readFile(jsonFilePath, 'utf8', (err, data) => {
+//     if (err) {
+//       console.error('Error reading the JSON file:', err);
+//       return;
+//     }
+
+//     let guests;
+//     try {
+//       guests = JSON.parse(data);
+//     } catch (parseError) {
+//       console.error('Error parsing the JSON file:', parseError);
+//       return;
+//     }
+
+//     // Filter the guests who answered "YES"
+//     const vipGuests = guests.filter(guest => guest.response === 'YES');
+
+//     // Sort guests alphabetically by Lastname then Firstname
+//     vipGuests.sort((a, b) => {
+//       if (a.lastname !== b.lastname) {
+//         return a.lastname.localeCompare(b.lastname);
+//       }
+//       return a.firstname.localeCompare(b.firstname);
+//     });
+
+//     // Format the list
+//     const formattedList = vipGuests.map((guest, index) => 
+//       `${index + 1}. ${guest.lastname} ${guest.firstname}`
+//     ).join('\n');
+
+//     // Write the formatted list to the output file
+//     fs.writeFile(outputFilePath, formattedList, 'utf8', (err) => {
+//       if (err) {
+//         console.error('Error writing the VIP list to the file:', err);
+//       } else {
+//         console.log('VIP list saved to vip.txt');
+//       }
+//     });
+//   });
+// }
+
+import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Function to generate the VIP list
-async function generateVIPList(dirPath) {
-  try {
-    // Construct the path to the guests.json file
-    const filePath = path.join(dirPath, 'guests.json');
+// Derive __dirname equivalent
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-    // Check if guests.json exists
-    await fs.access(filePath);
+// Define the path to the JSON file and the output text file
+const jsonFilePath = path.join(__dirname, 'guests.json');
+const outputFilePath = path.join(__dirname, 'vip.txt');
 
-    // Read and parse the guests.json file
-    const data = await fs.readFile(filePath, 'utf-8');
-    const guests = JSON.parse(data);
-
-    // Filter guests who responded 'YES'
-    const vipGuests = guests.filter(guest => guest.response === 'YES');
-
-    // If no guests responded 'YES', return an empty string
-    if (vipGuests.length === 0) {
-      console.log('');
-      return '';
+// Function to process and save the VIP list
+function processAndSaveVIPList() {
+  // Read and parse the JSON file
+  fs.readFile(jsonFilePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading the JSON file:', err);
+      return;
     }
+
+    let guests;
+    try {
+      guests = JSON.parse(data);
+    } catch (parseError) {
+      console.error('Error parsing the JSON file:', parseError);
+      return;
+    }
+
+    // Filter guests who answered "YES"
+    const vipGuests = guests.filter(guest => guest.response === 'YES');
 
     // Sort guests alphabetically by Lastname, then Firstname
     vipGuests.sort((a, b) => {
-      if (a.lastname === b.lastname) {
-        return a.firstname.localeCompare(b.firstname);
+      if (a.lastname !== b.lastname) {
+        return a.lastname.localeCompare(b.lastname);
       }
-      return a.lastname.localeCompare(b.lastname);
+      return a.firstname.localeCompare(b.firstname);
     });
 
-    // Format the output list
-    const vipList = vipGuests.map((guest, index) =>
+    // Format the list
+    const formattedList = vipGuests.map((guest, index) =>
       `${index + 1}. ${guest.lastname} ${guest.firstname}`
     ).join('\n');
 
-    // Define the output file path for vip.txt
-    const outputPath = path.join(dirPath, 'vip.txt');
-
-    // Write the VIP list to vip.txt
-    await fs.writeFile(outputPath, vipList, 'utf-8');
-
-    // Print the formatted VIP list
-    console.log(vipList);
-    return vipList;
-
-  } catch (err) {
-    // If guests.json doesn't exist, or another error occurs, return an empty string
-    if (err.code === 'ENOENT') {
-      console.log('');
-      return '';
-    } else {
-      // Log any other errors
-      console.error('Error:', err.message);
-      throw err;
-    }
-  }
+    // Write the formatted list to the output file
+    fs.writeFile(outputFilePath, formattedList, 'utf8', (err) => {
+      if (err) {
+        console.error('Error writing the VIP list to the file:', err);
+      } else {
+        console.log('VIP list saved to vip.txt');
+      }
+    });
+  });
 }
 
-// Get the directory path from the command-line argument or use the current directory
-const dirPath = process.argv[2] || process.cwd();
-
-// Run the function with the provided directory path
-generateVIPList(dirPath);
+// Check if the JSON file exists
+fs.access(jsonFilePath, fs.constants.F_OK, (err) => {
+  if (err) {
+    console.log('No guests.json file found. Creating a default file.');
+    const defaultData = JSON.stringify([]);
+    fs.writeFile(jsonFilePath, defaultData, 'utf8', (writeErr) => {
+      if (writeErr) {
+        console.error('Error creating the default JSON file:', writeErr);
+        return;
+      }
+      console.log('Default guests.json file created.');
+      processAndSaveVIPList(); // Process the default empty list
+    });
+  } else {
+    processAndSaveVIPList(); // Process the existing file
+  }
+});
