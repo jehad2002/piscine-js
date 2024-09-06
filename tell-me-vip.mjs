@@ -7,23 +7,20 @@ async function generateVIPList(dirPath) {
     // Construct the path to the guests.json file
     const filePath = path.join(dirPath, 'guests.json');
 
-    // Check if the guests.json file exists
-    await fs.access(filePath);
-
-    // Read and parse the guests.json file
+    // Read the guests.json file
     const data = await fs.readFile(filePath, 'utf-8');
     const guests = JSON.parse(data);
 
-    // Filter the guests who responded 'YES'
+    // Filter guests who responded 'YES'
     const vipGuests = guests.filter(guest => guest.response === 'YES');
 
-    // If no guests responded 'YES', do not create vip.txt and return an empty string
+    // If no guests responded 'YES', log and return an empty string
     if (vipGuests.length === 0) {
       console.log('');
       return '';
     }
 
-    // Sort the filtered guests alphabetically by Lastname, then Firstname
+    // Sort guests alphabetically by Lastname, then Firstname
     vipGuests.sort((a, b) => {
       if (a.lastname === b.lastname) {
         return a.firstname.localeCompare(b.firstname);
@@ -32,26 +29,26 @@ async function generateVIPList(dirPath) {
     });
 
     // Format the output list
-    const vipList = vipGuests.map((guest, index) => 
+    const vipList = vipGuests.map((guest, index) =>
       `${index + 1}. ${guest.lastname} ${guest.firstname}`
     ).join('\n');
 
     // Define the output file path
     const outputPath = path.join(dirPath, 'vip.txt');
 
-    // Write the formatted VIP list to vip.txt
+    // Write the VIP list to vip.txt
     await fs.writeFile(outputPath, vipList, 'utf-8');
 
-    // Print the generated vipList and return it
+    // Print the formatted VIP list
     console.log(vipList);
     return vipList;
+
   } catch (err) {
-    // If guests.json doesn't exist, return an empty string
+    // If guests.json doesn't exist or any other error occurs, log and return an empty string
     if (err.code === 'ENOENT') {
       console.log('');
       return '';
     } else {
-      // For any other errors, print and throw the error
       console.error('Error:', err.message);
       throw err;
     }
