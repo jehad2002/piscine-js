@@ -34,8 +34,25 @@ async function getVIPGuests() {
 
     console.log('VIP list saved to vip.txt');
   } catch (error) {
-    console.error('Error processing the guest list:', error);
+    if (error.code === 'ENOENT' && error.path === inputFile) {
+      // Handle case when input file does not exist
+      console.error('Guests file not found.');
+    } else {
+      // Handle other potential errors
+      console.error('Error processing the guest list:', error);
+    }
   }
 }
 
-getVIPGuests();
+async function createEmptyVIPFileIfNeeded() {
+  try {
+    // Ensure vip.txt exists even if no VIP guests are present
+    await fs.writeFile(outputFile, '', 'utf8');
+  } catch (error) {
+    console.error('Error creating vip.txt:', error);
+  }
+}
+
+// Run the main function and ensure the VIP file is created
+await createEmptyVIPFileIfNeeded();
+await getVIPGuests();
