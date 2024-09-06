@@ -1,5 +1,10 @@
 import { promises as fs } from 'fs';
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+// Get the directory name of the current module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const inputFile = join(__dirname, 'guests.json'); // Input file containing guests
 const outputFile = join(__dirname, 'vip.txt');    // Output file to save VIP list
