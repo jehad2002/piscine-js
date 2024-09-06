@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 
-// Define the function to generate the VIP list
+// Function to generate the VIP list
 async function generateVIPList(dirPath) {
   try {
     // Construct the path to the guests.json file
@@ -17,7 +17,7 @@ async function generateVIPList(dirPath) {
     // Filter the guests who responded 'YES'
     const vipGuests = guests.filter(guest => guest.response === 'YES');
 
-    // If no guests responded 'YES', do not create vip.txt
+    // If no guests responded 'YES', do not create vip.txt and return an empty string
     if (vipGuests.length === 0) {
       console.log('');
       return '';
@@ -46,17 +46,20 @@ async function generateVIPList(dirPath) {
     console.log(vipList);
     return vipList;
   } catch (err) {
-    // If guests.json doesn't exist or any other error occurs, log an empty result
+    // If guests.json doesn't exist, return an empty string
     if (err.code === 'ENOENT') {
       console.log('');
       return '';
     } else {
+      // For any other errors, print and throw the error
       console.error('Error:', err.message);
       throw err;
     }
   }
 }
 
-// Run the function with the directory path passed from the context
-const dirPath = process.argv[2] || process.cwd();  // Directory path from arguments or current directory
+// Get the directory path from the command-line argument or use the current directory
+const dirPath = process.argv[2] || process.cwd();
+
+// Run the function with the provided directory path
 generateVIPList(dirPath);
