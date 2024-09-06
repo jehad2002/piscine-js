@@ -194,14 +194,12 @@
 
 //============================
 
-// Import required modules
 import { promises as fs } from 'fs';
 import path from 'path';
 
 // Define the path to the JSON file (modify as per your file structure)
 const filePath = path.join(process.cwd(), 'guests.json');
 
-// Read the file, process the data, and write the VIP list
 async function generateVIPList() {
   try {
     // Read and parse the guests.json file
@@ -210,6 +208,12 @@ async function generateVIPList() {
 
     // Filter the guests who responded 'YES'
     const vipGuests = guests.filter(guest => guest.response === 'YES');
+
+    // If no guests responded 'YES', do not create vip.txt
+    if (vipGuests.length === 0) {
+      console.log('');
+      return;
+    }
 
     // Sort the filtered guests alphabetically by Lastname, then Firstname
     vipGuests.sort((a, b) => {
@@ -230,10 +234,15 @@ async function generateVIPList() {
     // Write the formatted VIP list to vip.txt
     await fs.writeFile(outputPath, vipList, 'utf-8');
 
-    // Print a success message
-    console.log('VIP list generated and saved to vip.txt');
+    // Print the generated vipList
+    console.log(vipList);
   } catch (err) {
-    console.error('Error:', err.message);
+    // If guests.json doesn't exist, log an empty result
+    if (err.code === 'ENOENT') {
+      console.log('');
+    } else {
+      console.error('Error:', err.message);
+    }
   }
 }
 
