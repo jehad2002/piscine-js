@@ -1,69 +1,36 @@
-import fs from 'fs/promises';
-import path from 'path';
+import { promises as fs } from 'fs';
+import { join } from 'path';
 
-// Function to filter and save VIP guests who answered "YES"
-async function listGuests(directoryPath) {
-    try {
-        // Read the directory contents
-        const files = await fs.readdir(directoryPath);
+const inputFile = join(__dirname, 'guests.json'); // Input file containing guests
+const outputFile = join(__dirname, 'vip.txt');    // Output file to save VIP list
 
-        // Filter out non-JSON files
-        const jsonFiles = files.filter(file => path.extname(file) === '.json');
+async function getVIPGuests() {
+  try {
+    // Read the guests.json file
+    const data = await fs.readFile(inputFile, 'utf8');
+    const guests = JSON.parse(data);
 
-        // Array to hold guests who answered "YES"
-        let vipGuests = [];
+    // Filter guests who answered 'YES'
+    const vipGuests = guests.filter(guest => guest.response === 'YES');
 
-        // Process each JSON file
-        for (const file of jsonFiles) {
-            const filePath = path.join(directoryPath, file);
+    // Sort guests alphabetically by last name and then first name
+    vipGuests.sort((a, b) => {
+      if (a.lastname === b.lastname) {
+        return a.firstname.localeCompare(b.firstname);
+      }
+      return a.lastname.localeCompare(b.lastname);
+    });
 
-            // Read the file and parse JSON content
-            const fileContent = await fs.readFile(filePath, 'utf8');
-            const guest = JSON.parse(fileContent);
+    // Format the list as 'Number. Lastname Firstname'
+    const formattedGuests = vipGuests.map((guest, index) => `${index + 1}. ${guest.lastname} ${guest.firstname}`);
 
-            // Check if the guest responded "YES"
-            if (guest.response === 'YES') {
-                const baseName = path.basename(file, '.json');
-                const [firstname, lastname] = baseName.split('_');
-                vipGuests.push({ firstname, lastname });
-            }
-        }
+    // Write the formatted list to vip.txt
+    await fs.writeFile(outputFile, formattedGuests.join('\n'), 'utf8');
 
-        // Sort guests alphabetically by Lastname then Firstname
-        vipGuests.sort((a, b) => {
-            if (a.lastname !== b.lastname) {
-                return a.lastname.localeCompare(b.lastname);
-            }
-            return a.firstname.localeCompare(b.firstname);
-        });
-
-        // Format the list
-        const formattedList = vipGuests.map((guest, index) =>
-            `${index + 1}. ${guest.lastname} ${guest.firstname}`
-        ).join('\n');
-
-        // Define the path for vip.txt
-        const outputFilePath = path.join(directoryPath, 'vip.txt');
-
-        // Ensure the directory exists
-        await fs.mkdir(directoryPath, { recursive: true });
-
-        // Write the formatted list to the output file
-        await fs.writeFile(outputFilePath, formattedList, 'utf8');
-        console.log('VIP list saved to vip.txt');
-
-    } catch (error) {
-        console.error('Error reading directory or processing files:', error);
-    }
+    console.log('VIP list saved to vip.txt');
+  } catch (error) {
+    console.error('Error processing the guest list:', error);
+  }
 }
 
-// Main execution logic
-async function main() {
-    const args = process.argv.slice(2);
-    const directoryPath = args[0] || '.';
-    const resolvedPath = path.resolve(directoryPath);
-    await listGuests(resolvedPath);
-}
-
-// Execute main function
-main();
+getVIPGuests();

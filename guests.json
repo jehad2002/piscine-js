@@ -1,27 +1,5 @@
 [
-  {
-    "firstname": "John",
-    "lastname": "Doe",
-    "response": "YES"
-  },
-  {
-    "firstname": "Alice",
-    "lastname": "Johnson",
-    "response": "NO"
-  },
-  {
-    "firstname": "Bob",
-    "lastname": "Smith",
-    "response": "YES"
-  },
-  {
-    "firstname": "Charlie",
-    "lastname": "Brown",
-    "response": "NO"
-  },
-  {
-    "firstname": "Eve",
-    "lastname": "Adams",
-    "response": "YES"
-  }
+  {"firstname": "John", "lastname": "Doe", "response": "YES"},
+  {"firstname": "Jane", "lastname": "Smith", "response": "NO"},
+  {"firstname": "Alice", "lastname": "Johnson", "response": "YES"}
 ]
