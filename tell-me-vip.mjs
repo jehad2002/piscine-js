@@ -110,84 +110,132 @@
 //   });
 // }
 
-import fs from 'fs';
+// import fs from 'fs';
+// import path from 'path';
+// import { fileURLToPath } from 'url';
+
+// // Derive __dirname equivalent
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
+
+// // Define the path to the JSON file and the output text file
+// const jsonFilePath = path.join(__dirname, 'guests.json');
+// const outputFilePath = path.join(__dirname, 'vip.txt');
+
+// // Ensure the output directory exists
+// const outputDir = path.dirname(outputFilePath);
+// fs.mkdir(outputDir, { recursive: true }, (err) => {
+//   if (err) {
+//     console.error('Error creating output directory:', err);
+//     return;
+//   }
+
+//   // Check if the JSON file exists
+//   fs.access(jsonFilePath, fs.constants.F_OK, (err) => {
+//     if (err) {
+//       console.log('No guests.json file found. Creating default file.');
+//       const defaultData = JSON.stringify([]);
+//       fs.writeFile(jsonFilePath, defaultData, 'utf8', (writeErr) => {
+//         if (writeErr) {
+//           console.error('Error creating the default JSON file:', writeErr);
+//           return;
+//         }
+//         console.log('Default guests.json file created.');
+//         processAndSaveVIPList();
+//       });
+//     } else {
+//       processAndSaveVIPList();
+//     }
+//   });
+// });
+
+// function processAndSaveVIPList() {
+//   // Read and parse the JSON file
+//   fs.readFile(jsonFilePath, 'utf8', (err, data) => {
+//     if (err) {
+//       console.error('Error reading the JSON file:', err);
+//       return;
+//     }
+
+//     let guests;
+//     try {
+//       guests = JSON.parse(data);
+//     } catch (parseError) {
+//       console.error('Error parsing the JSON file:', parseError);
+//       return;
+//     }
+
+//     // Filter the guests who answered "YES"
+//     const vipGuests = guests.filter(guest => guest.response === 'YES');
+
+//     // Sort guests alphabetically by Lastname then Firstname
+//     vipGuests.sort((a, b) => {
+//       if (a.lastname !== b.lastname) {
+//         return a.lastname.localeCompare(b.lastname);
+//       }
+//       return a.firstname.localeCompare(b.firstname);
+//     });
+
+//     // Format the list
+//     const formattedList = vipGuests.map((guest, index) => 
+//       `${index + 1}. ${guest.lastname} ${guest.firstname}`
+//     ).join('\n');
+
+//     // Write the formatted list to the output file
+//     fs.writeFile(outputFilePath, formattedList, 'utf8', (err) => {
+//       if (err) {
+//         console.error('Error writing the VIP list to the file:', err);
+//       } else {
+//         console.log('VIP list saved to vip.txt');
+//       }
+//     });
+//   });
+// }
+
+//============================
+
+// Import required modules
+import { promises as fs } from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
-// Derive __dirname equivalent
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Define the path to the JSON file (modify as per your file structure)
+const filePath = path.join(process.cwd(), 'guests.json');
 
-// Define the path to the JSON file and the output text file
-const jsonFilePath = path.join(__dirname, 'guests.json');
-const outputFilePath = path.join(__dirname, 'vip.txt');
+// Read the file, process the data, and write the VIP list
+async function generateVIPList() {
+  try {
+    // Read and parse the guests.json file
+    const data = await fs.readFile(filePath, 'utf-8');
+    const guests = JSON.parse(data);
 
-// Ensure the output directory exists
-const outputDir = path.dirname(outputFilePath);
-fs.mkdir(outputDir, { recursive: true }, (err) => {
-  if (err) {
-    console.error('Error creating output directory:', err);
-    return;
-  }
-
-  // Check if the JSON file exists
-  fs.access(jsonFilePath, fs.constants.F_OK, (err) => {
-    if (err) {
-      console.log('No guests.json file found. Creating default file.');
-      const defaultData = JSON.stringify([]);
-      fs.writeFile(jsonFilePath, defaultData, 'utf8', (writeErr) => {
-        if (writeErr) {
-          console.error('Error creating the default JSON file:', writeErr);
-          return;
-        }
-        console.log('Default guests.json file created.');
-        processAndSaveVIPList();
-      });
-    } else {
-      processAndSaveVIPList();
-    }
-  });
-});
-
-function processAndSaveVIPList() {
-  // Read and parse the JSON file
-  fs.readFile(jsonFilePath, 'utf8', (err, data) => {
-    if (err) {
-      console.error('Error reading the JSON file:', err);
-      return;
-    }
-
-    let guests;
-    try {
-      guests = JSON.parse(data);
-    } catch (parseError) {
-      console.error('Error parsing the JSON file:', parseError);
-      return;
-    }
-
-    // Filter the guests who answered "YES"
+    // Filter the guests who responded 'YES'
     const vipGuests = guests.filter(guest => guest.response === 'YES');
 
-    // Sort guests alphabetically by Lastname then Firstname
+    // Sort the filtered guests alphabetically by Lastname, then Firstname
     vipGuests.sort((a, b) => {
-      if (a.lastname !== b.lastname) {
-        return a.lastname.localeCompare(b.lastname);
+      if (a.lastname === b.lastname) {
+        return a.firstname.localeCompare(b.firstname);
       }
-      return a.firstname.localeCompare(b.firstname);
+      return a.lastname.localeCompare(b.lastname);
     });
 
-    // Format the list
-    const formattedList = vipGuests.map((guest, index) => 
+    // Format the output list
+    const vipList = vipGuests.map((guest, index) => 
       `${index + 1}. ${guest.lastname} ${guest.firstname}`
     ).join('\n');
 
-    // Write the formatted list to the output file
-    fs.writeFile(outputFilePath, formattedList, 'utf8', (err) => {
-      if (err) {
-        console.error('Error writing the VIP list to the file:', err);
-      } else {
-        console.log('VIP list saved to vip.txt');
-      }
-    });
-  });
+    // Define the output file path
+    const outputPath = path.join(process.cwd(), 'vip.txt');
+
+    // Write the formatted VIP list to vip.txt
+    await fs.writeFile(outputPath, vipList, 'utf-8');
+
+    // Print a success message
+    console.log('VIP list generated and saved to vip.txt');
+  } catch (err) {
+    console.error('Error:', err.message);
+  }
 }
+
+// Run the function to generate the VIP list
+generateVIPList();
