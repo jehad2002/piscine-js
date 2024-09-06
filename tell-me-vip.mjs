@@ -7,14 +7,17 @@ async function generateVIPList(dirPath) {
     // Construct the path to the guests.json file
     const filePath = path.join(dirPath, 'guests.json');
 
-    // Read the guests.json file
+    // Check if guests.json exists
+    await fs.access(filePath);
+
+    // Read and parse the guests.json file
     const data = await fs.readFile(filePath, 'utf-8');
     const guests = JSON.parse(data);
 
     // Filter guests who responded 'YES'
     const vipGuests = guests.filter(guest => guest.response === 'YES');
 
-    // If no guests responded 'YES', log and return an empty string
+    // If no guests responded 'YES', return an empty string
     if (vipGuests.length === 0) {
       console.log('');
       return '';
@@ -33,7 +36,7 @@ async function generateVIPList(dirPath) {
       `${index + 1}. ${guest.lastname} ${guest.firstname}`
     ).join('\n');
 
-    // Define the output file path
+    // Define the output file path for vip.txt
     const outputPath = path.join(dirPath, 'vip.txt');
 
     // Write the VIP list to vip.txt
@@ -44,11 +47,12 @@ async function generateVIPList(dirPath) {
     return vipList;
 
   } catch (err) {
-    // If guests.json doesn't exist or any other error occurs, log and return an empty string
+    // If guests.json doesn't exist, or another error occurs, return an empty string
     if (err.code === 'ENOENT') {
       console.log('');
       return '';
     } else {
+      // Log any other errors
       console.error('Error:', err.message);
       throw err;
     }
