@@ -1,6 +1,0 @@
-[
-  { "firstname": "John", "lastname": "Doe", "rsvp": "YES" },
-  { "firstname": "Jane", "lastname": "Smith", "rsvp": "NO" },
-  { "firstname": "Alice", "lastname": "Brown", "rsvp": "YES" },
-  { "firstname": "Bob", "lastname": "White", "rsvp": "NO" }
-]
