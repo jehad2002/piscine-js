@@ -49,7 +49,6 @@
 import { readdir, readFile, writeFile } from 'fs/promises';
 import { join, extname, basename } from 'path';
 
-// Function to process guests and write the VIP list
 async function listVIPs(directoryPath) {
     try {
         // Read directory contents
@@ -58,46 +57,52 @@ async function listVIPs(directoryPath) {
         // Filter JSON files
         const jsonFiles = files.filter(file => extname(file) === '.json');
 
+        // Map and filter guests who answered 'YES'
         const guestsPromises = jsonFiles.map(async (file) => {
             const filePath = join(directoryPath, file);
             const fileContent = await readFile(filePath, 'utf-8');
             const guest = JSON.parse(fileContent);
 
-            // Filter out guests who didn't answer 'YES'
+            // Check if the guest RSVP'd 'YES'
             if (guest.rsvp === 'YES') {
                 const [firstname, lastname] = basename(file, '.json').split('_');
                 return `${lastname} ${firstname}`;
             }
-
             return null;
         });
 
-        // Wait for all promises and filter null values
+        // Wait for all promises and filter out null values (i.e., those who did not RSVP 'YES')
         const guests = (await Promise.all(guestsPromises)).filter(Boolean);
 
         // Sort guests alphabetically
         const sortedGuests = guests.sort();
 
-        // Format the list with numbering
+        // Format guests list
         const formattedGuests = sortedGuests.map((name, index) => `${index + 1}. ${name}`).join('\n');
 
-        // Write the VIP list to vip.txt
+        // Define the path for the vip.txt file
         const vipFilePath = join(directoryPath, 'vip.txt');
+
+        // Write the VIP list to vip.txt
+        // If no guests RSVP'd 'YES', the file will be empty but still created
         await writeFile(vipFilePath, formattedGuests, 'utf-8');
 
-        // Log the result to console
+        // Log the result to console (for testing purposes)
         console.log(formattedGuests);
+
+        // Return the data for testing
+        return formattedGuests;
     } catch (error) {
-        console.error('Error reading files or processing guests:', error);
+        console.error('Error processing guests:', error);
     }
 }
 
-// Main execution function
+// Main execution logic
 async function main() {
     const args = process.argv.slice(2);
     const directoryPath = args[0] || '.';
     await listVIPs(directoryPath);
 }
 
-// Execute the main function
+// Execute main function
 main();
