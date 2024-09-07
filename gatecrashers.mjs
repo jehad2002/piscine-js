@@ -3,17 +3,17 @@ import { writeFile } from 'fs/promises';
 import { join } from 'path';
 import { Buffer } from 'buffer';
 
-// تحديد المسار لمجلد الضيوف
+// Directory path for storing guest information
 const GUESTS_DIR = join(process.cwd(), 'guests');
 
-// قائمة المستخدمين المصرح لهم وكلمات السر
+// List of authorized users and their passwords
 const AUTHORIZED_USERS = {
   'Caleb_Squires': 'abracadabra',
   'Tyrique_Dalton': 'abracadabra',
   'Rahima_Young': 'abracadabra'
 };
 
-// دالة للتحقق من الاعتماديات
+// Function to check if the request has valid authentication
 const authenticate = (authHeader) => {
   if (!authHeader) return false;
   const [scheme, credentials] = authHeader.split(' ');
@@ -22,13 +22,13 @@ const authenticate = (authHeader) => {
   return AUTHORIZED_USERS[username] === password;
 };
 
-// إنشاء الخادم
+// Create and start the server
 const server = createServer(async (req, res) => {
   if (req.method === 'POST') {
     const guestName = req.url.slice(1);
     const filePath = join(GUESTS_DIR, `${guestName}.json`);
 
-    // التحقق من الاعتماديات
+    // Check for Basic Authentication
     const authHeader = req.headers['authorization'];
     if (!authenticate(authHeader)) {
       res.writeHead(401, { 'Content-Type': 'application/json' });
@@ -43,30 +43,30 @@ const server = createServer(async (req, res) => {
 
     req.on('end', async () => {
       try {
-        // محاولة كتابة الملف
+        // Write the received data to the JSON file
         await writeFile(filePath, body, 'utf8');
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(body);
       } catch (err) {
-        // إذا كان هناك خطأ في الخادم
+        // Handle server errors
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'server failed' }));
       }
     });
 
     req.on('error', () => {
-      // إذا حدث خطأ أثناء قراءة البيانات
+      // Handle errors while reading request data
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'server failed' }));
     });
   } else {
-    // التعامل مع طرق أخرى غير POST
+    // Handle non-POST requests
     res.writeHead(405, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ error: 'method not allowed' }));
   }
 });
 
-// بدء الاستماع على المنفذ 5000
+// Start listening on port 5000
 server.listen(5000, () => {
   console.log('Server is listening on port 5000');
 });
