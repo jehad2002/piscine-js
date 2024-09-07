@@ -1,14 +1,14 @@
-import { readFile, writeFile } from 'fs/promises';
+import { readFile, writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 
 // Define the path to the guests.json file
-const filePath = join('.', 'guests.json');
+const filePath = (dir) => join(dir, 'guests.json');
 
 // Read and process the guest list
-async function processGuestList() {
+async function processGuestList(dir) {
   try {
     // Read the JSON file containing the guest list
-    const data = await readFile(filePath, 'utf-8');
+    const data = await readFile(filePath(dir), 'utf-8');
 
     // Parse the JSON data
     const guests = JSON.parse(data);
@@ -32,14 +32,20 @@ async function processGuestList() {
     // Join the formatted guests into a string with each guest on a new line
     const vipList = formattedGuests.join('\n');
 
-    // Write the formatted list to a vip.txt file
-    await writeFile('vip.txt', vipList, 'utf-8');
+    // Write the formatted list to a vip.txt file (create it even if it's empty)
+    await writeFile(join(dir, 'vip.txt'), vipList, 'utf-8');
     
     console.log('VIP list successfully saved to vip.txt');
   } catch (error) {
-    console.error('Error processing guest list:', error);
+    if (error.code === 'ENOENT') {
+      // If guests.json doesn't exist, create an empty vip.txt
+      await writeFile(join(dir, 'vip.txt'), '', 'utf-8');
+      console.log('No guests.json found, created an empty vip.txt');
+    } else {
+      console.error('Error processing guest list:', error);
+    }
   }
 }
 
-// Call the function to process the guest list
-processGuestList();
+// Export the function for use
+export { processGuestList };
