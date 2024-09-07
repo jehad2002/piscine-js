@@ -83,17 +83,14 @@ async function listVIPs(directoryPath) {
         // Define the path for the vip.txt file
         const vipFilePath = join(directoryPath, 'vip.txt');
 
-        // Write the VIP list to vip.txt
-        // If no guests RSVP'd 'YES', the file will be empty but still created
+        // Ensure the file is written even if it's empty
         await writeFile(vipFilePath, formattedGuests, 'utf-8');
 
-        // Log the result to console (for testing purposes)
-        console.log(formattedGuests);
-
-        // Return the data for testing
+        // Return the result (used for testing purposes)
         return formattedGuests;
     } catch (error) {
         console.error('Error processing guests:', error);
+        return '';
     }
 }
 
