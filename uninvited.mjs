@@ -10,12 +10,8 @@ const __dirname = path.dirname(__filename);
 const PORT = 5000;
 
 // Define the directory where guest files will be stored
+// Use a temporary directory if the `guests` directory cannot be created
 const GUESTS_DIR = path.join(__dirname, 'guests');
-
-// Ensure the 'guests' directory exists
-if (!fs.existsSync(GUESTS_DIR)) {
-    fs.mkdirSync(GUESTS_DIR);
-}
 
 const server = http.createServer((req, res) => {
     if (req.method === 'POST') {
