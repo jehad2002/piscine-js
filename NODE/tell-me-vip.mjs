@@ -1,3 +1,43 @@
+// import { promises as fs } from 'fs';
+// import { join } from 'path';
+// import { fileURLToPath } from 'url';
+
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = join(__filename, '..');
+
+// async function filterVIPGuests() {
+//   try {
+//     const inputFilePath = join(__dirname, 'guests.json');
+//     const outputFilePath = join(__dirname, 'vip.txt');
+    
+//     const guestsData = await fs.readFile(inputFilePath, 'utf8');
+//     const guests = JSON.parse(guestsData);
+    
+//     const vipGuests = guests.filter(guest => guest.answer === 'YES');
+    
+//     vipGuests.sort((a, b) => {
+//       if (a.lastname === b.lastname) {
+//         return a.firstname.localeCompare(b.firstname);
+//       }
+//       return a.lastname.localeCompare(b.lastname);
+//     });
+    
+//     const formattedGuests = vipGuests.map((guest, index) => 
+//       `${index + 1}. ${guest.lastname} ${guest.firstname}`
+//     ).join('\n');
+    
+//     await fs.writeFile(outputFilePath, formattedGuests, 'utf8');
+    
+//     console.log('VIP list saved to vip.txt');
+//   } catch (error) {
+//     console.error('Error:', error);
+//   }
+// }
+
+// filterVIPGuests();
+
+//=====================================================
+
 import { readdir, readFile, writeFile } from 'fs/promises';
 import { join, extname, basename } from 'path';
 
